@@ -20,7 +20,6 @@ const Routes = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/chat-interface" element={<ChatInterface />} />
         <Route path="/about-page" element={<AboutPage />} />
-        <Route path="/landing-page" element={<LandingPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/feedback-page" element={<FeedbackPage />} />
         <Route path="*" element={<NotFound />} />

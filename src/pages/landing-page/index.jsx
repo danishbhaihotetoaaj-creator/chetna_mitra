@@ -29,7 +29,7 @@ const LandingPage = () => {
           content="Experience the future of AI assistance with Chetna Mitra. Get instant answers, personalized support, and intelligent conversations." 
         />
         <meta property="og:type" content="website" />
-        <link rel="canonical" href="/landing-page" />
+        <link rel="canonical" href="/" />
       </Helmet>
 
       <div className="min-h-screen bg-background">

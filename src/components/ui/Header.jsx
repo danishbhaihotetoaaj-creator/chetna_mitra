@@ -8,7 +8,7 @@ const Header = () => {
   const location = useLocation();
 
   const navigationItems = [
-    { label: 'Home', path: '/landing-page', icon: 'Home' },
+            { label: 'Home', path: '/', icon: 'Home' },
     { label: 'Chat', path: '/chat-interface', icon: 'MessageCircle' },
     { label: 'About', path: '/about-page', icon: 'Info' },
     { label: 'Privacy', path: '/privacy-policy', icon: 'Shield' },
@@ -32,7 +32,7 @@ const Header = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link 
-              to="/landing-page" 
+              to="/" 
               className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200"
               onClick={closeMobileMenu}
             >

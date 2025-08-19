@@ -48,7 +48,7 @@ const SuccessMessage = ({ onSubmitAnother }) => {
           </Button>
         </Link>
         
-        <Link to="/landing-page">
+        <Link to="/">
           <Button variant="ghost" iconName="Home" iconPosition="left">
             Back to Home
           </Button>

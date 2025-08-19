@@ -1,0 +1,321 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  clerkId           String    @unique
+  email             String    @unique
+  firstName         String?
+  lastName          String?
+  avatar            String?
+  role              UserRole  @default(USER)
+  isActive          Boolean   @default(true)
+  isVerified        Boolean   @default(false)
+  lastLoginAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  conversations     Conversation[]
+  documents        Document[]
+  subscriptions    Subscription[]
+  notifications    Notification[]
+  apiKeys          ApiKey[]
+  rateLimits       RateLimit[]
+  auditLogs        AuditLog[]
+  communityPosts   CommunityPost[]
+  sharedConversations SharedConversation[]
+
+  @@map("users")
+}
+
+model Conversation {
+  id          String    @id @default(cuid())
+  title       String
+  content     Json
+  userId      String
+  isPublic    Boolean   @default(false)
+  isArchived  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages    Message[]
+  embeddings  Embedding[]
+  sharedConversations SharedConversation[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String    @id @default(cuid())
+  content        String
+  role           MessageRole
+  conversationId String
+  metadata       Json?
+  createdAt      DateTime  @default(now())
+
+  // Relations
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model Document {
+  id          String    @id @default(cuid())
+  title       String
+  fileName   String
+  fileType   String
+  fileSize   Int
+  fileUrl    String
+  userId     String
+  isProcessed Boolean  @default(false)
+  metadata   Json?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  embeddings  Embedding[]
+
+  @@map("documents")
+}
+
+model Embedding {
+  id             String    @id @default(cuid())
+  vector         Float[]
+  metadata       Json?
+  conversationId String?
+  documentId     String?
+  createdAt      DateTime  @default(now())
+
+  // Relations
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  document      Document?     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@map("embeddings")
+}
+
+model Subscription {
+  id            String    @id @default(cuid())
+  userId        String
+  planType      PlanType
+  status        SubscriptionStatus
+  stripeId      String?
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  cancelAtPeriodEnd Boolean @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean   @default(false)
+  metadata  Json?
+  createdAt DateTime  @default(now())
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model ApiKey {
+  id          String    @id @default(cuid())
+  userId      String
+  name        String
+  key         String    @unique
+  permissions Json
+  isActive    Boolean   @default(true)
+  lastUsedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("api_keys")
+}
+
+model RateLimit {
+  id        String    @id @default(cuid())
+  userId    String?
+  ipAddress String?
+  endpoint  String
+  count     Int       @default(1)
+  windowStart DateTime @default(now())
+  createdAt DateTime  @default(now())
+
+  // Relations
+  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("rate_limits")
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  userId      String
+  action      String
+  resource    String
+  resourceId  String?
+  metadata    Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("audit_logs")
+}
+
+model CommunityPost {
+  id          String    @id @default(cuid())
+  userId      String
+  title       String
+  content     String
+  tags        String[]
+  isPublished Boolean   @default(true)
+  isModerated Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("community_posts")
+}
+
+model SharedConversation {
+  id             String    @id @default(cuid())
+  conversationId String
+  userId         String
+  sharedWith     String[]
+  permissions    Json
+  expiresAt      DateTime?
+  createdAt      DateTime  @default(now())
+
+  // Relations
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("shared_conversations")
+}
+
+model AIProvider {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  type        AIProviderType
+  apiKey      String
+  baseUrl     String?
+  isActive    Boolean   @default(true)
+  priority    Int       @default(0)
+  region      String?
+  costPerToken Float?
+  rateLimit   Int?
+  healthStatus HealthStatus @default(HEALTHY)
+  lastHealthCheck DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("ai_providers")
+}
+
+model AIRequest {
+  id          String    @id @default(cuid())
+  providerId  String
+  userId      String?
+  endpoint    String
+  requestData Json
+  responseData Json?
+  status      RequestStatus
+  latency     Int?
+  tokensUsed  Int?
+  cost        Float?
+  error       String?
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  provider    AIProvider @relation(fields: [providerId], references: [id])
+
+  @@map("ai_requests")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  MODERATOR
+  USER
+  ENTERPRISE
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum PlanType {
+  FREE
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  CANCELLED
+  PAST_DUE
+}
+
+enum NotificationType {
+  INFO
+  WARNING
+  ERROR
+  SUCCESS
+}
+
+enum AIProviderType {
+  OPENAI
+  OPENROUTER
+  A4F
+  ANTHROPIC
+  GOOGLE
+  CUSTOM
+}
+
+enum HealthStatus {
+  HEALTHY
+  DEGRADED
+  UNHEALTHY
+  OFFLINE
+}
+
+enum RequestStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  RATE_LIMITED
+}

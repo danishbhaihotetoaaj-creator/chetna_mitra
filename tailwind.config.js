@@ -1,110 +1,92 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        border: 'var(--color-border)', // light gray
-        input: 'var(--color-input)', // pure white
-        ring: 'var(--color-ring)', // deep blue
-        background: 'var(--color-background)', // warm off-white
-        foreground: 'var(--color-foreground)', // rich charcoal
         primary: {
-          DEFAULT: 'var(--color-primary)', // deep blue
-          foreground: 'var(--color-primary-foreground)', // white
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
         },
-        secondary: {
-          DEFAULT: 'var(--color-secondary)', // sophisticated slate
-          foreground: 'var(--color-secondary-foreground)', // white
-        },
-        destructive: {
-          DEFAULT: 'var(--color-destructive)', // clear red
-          foreground: 'var(--color-destructive-foreground)', // white
-        },
-        muted: {
-          DEFAULT: 'var(--color-muted)', // very light gray
-          foreground: 'var(--color-muted-foreground)', // sophisticated slate
+        dark: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+          950: '#020617',
         },
         accent: {
-          DEFAULT: 'var(--color-accent)', // bright sky blue
-          foreground: 'var(--color-accent-foreground)', // white
-        },
-        popover: {
-          DEFAULT: 'var(--color-popover)', // pure white
-          foreground: 'var(--color-popover-foreground)', // rich charcoal
-        },
-        card: {
-          DEFAULT: 'var(--color-card)', // pure white
-          foreground: 'var(--color-card-foreground)', // rich charcoal
-        },
-        success: {
-          DEFAULT: 'var(--color-success)', // professional emerald
-          foreground: 'var(--color-success-foreground)', // white
-        },
-        warning: {
-          DEFAULT: 'var(--color-warning)', // balanced amber
-          foreground: 'var(--color-warning-foreground)', // white
-        },
-        error: {
-          DEFAULT: 'var(--color-error)', // clear red
-          foreground: 'var(--color-error-foreground)', // white
-        },
+          50: '#fdf4ff',
+          100: '#fae8ff',
+          200: '#f5d0fe',
+          300: '#f0abfc',
+          400: '#e879f9',
+          500: '#d946ef',
+          600: '#c026d3',
+          700: '#a21caf',
+          800: '#86198f',
+          900: '#701a75',
+        }
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
-      fontWeight: {
-        normal: '400',
-        medium: '500',
-        semibold: '600',
-        bold: '700',
-      },
-      borderRadius: {
-        lg: '12px',
-        md: '8px',
-        sm: '6px',
-      },
-      boxShadow: {
-        sm: '0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)',
-        DEFAULT: '0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)',
-        md: '0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06)',
-        lg: '0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05)',
-        floating: '0 4px 12px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1)',
-      },
       animation: {
-        'fade-in': 'fadeIn 200ms ease-out',
-        'slide-in': 'slideIn 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-        'typing': 'typing 1.5s infinite',
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'slide-up': 'slideUp 0.3s ease-out',
+        'slide-down': 'slideDown 0.3s ease-out',
+        'bounce-in': 'bounceIn 0.6s ease-out',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
-        slideIn: {
+        slideUp: {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideDown: {
           '0%': { transform: 'translateY(-10px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
-        typing: {
-          '0%, 60%': { opacity: '1' },
-          '30%': { opacity: '0.5' },
+        bounceIn: {
+          '0%': { transform: 'scale(0.3)', opacity: '0' },
+          '50%': { transform: 'scale(1.05)' },
+          '70%': { transform: 'scale(0.9)' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
         },
       },
-      transitionTimingFunction: {
-        'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
-      },
-      spacing: {
-        '18': '4.5rem',
-        '88': '22rem',
+      backdropBlur: {
+        xs: '2px',
       },
     },
   },
   plugins: [
+    require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
+    require('@tailwindcss/aspect-ratio'),
     require('tailwindcss-animate'),
   ],
 }
